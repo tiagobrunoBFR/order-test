@@ -22,8 +22,9 @@ func OrderCreate(orderDto CreateOrderDto) entity.Order {
 		Payment: payment,
 	}
 
-	rules.ValueToFreeShipping(orderDto.Product.Value, &order)
+	rules.FreeShippingByValue(orderDto.Product.Value, &order)
 	rules.FragileByCategory(orderDto.Product.Category, &order)
+	rules.DiscountByPaymentMethod(orderDto.Method, &order)
 
 	return order
 }

@@ -17,7 +17,7 @@ func TestOrderCreate(t *testing.T) {
 		{entity.CategoryElectronic, 1200, entity.PaymentMethodPix, entity.LabelFreeShipping, 1200},
 		{entity.CategoryHomeAppliance, 900, entity.PaymentMethodPix, entity.LabelFragile, 900},
 		{entity.CategoryChildren, 900, entity.PaymentMethodPix, entity.LabelGift, 900},
-		{entity.CategoryElectronic, 900, entity.PaymentMethodBankSlip, "", 900},
+		{entity.CategoryElectronic, 1000, entity.PaymentMethodBankSlip, "", 900},
 	}
 
 	for _, caseTest := range casesTest {
