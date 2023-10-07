@@ -5,6 +5,8 @@ import (
 	"order-test/rules"
 )
 
+const freeShippingValue = 1000
+
 type CreateOrderDto struct {
 	Product entity.Product
 	Method  string
@@ -22,9 +24,10 @@ func OrderCreate(orderDto CreateOrderDto) entity.Order {
 		Payment: payment,
 	}
 
-	rules.FreeShippingByValue(orderDto.Product.Value, &order)
-	rules.FragileByCategory(orderDto.Product.Category, &order)
-	rules.DiscountByPaymentMethod(orderDto.Method, &order)
+	rules.LabelByValue(freeShippingValue, entity.LabelFreeShipping, &order)
+	rules.LabelByCategory(entity.CategoryHomeAppliance, entity.LabelFragile, &order)
+	rules.LabelByCategory(entity.CategoryChildren, entity.LabelGift, &order)
+	rules.DiscountByPaymentMethod(entity.PaymentMethodBankSlip, 0.10, &order)
 
 	return order
 }
