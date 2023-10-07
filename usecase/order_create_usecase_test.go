@@ -8,13 +8,14 @@ import (
 
 func TestOrderCreate(t *testing.T) {
 	product := entity.Product{
-		Category: "Test",
+		Category: "eletrodoméstico",
 		Value:    1200,
 	}
 
 	method := "pix"
 
-	expectedLabel := entity.FreeShippingLabel
+	expectedLabelFreeShipping := entity.FreeShippingLabel
+	expectedLabelFragile := entity.FragileLabel
 
 	orderInput := CreateOrderDto{
 		Product: product,
@@ -22,5 +23,6 @@ func TestOrderCreate(t *testing.T) {
 	}
 
 	result := OrderCreate(orderInput)
-	assert.Equal(t, expectedLabel, result.Labels[0])
+	assert.Equal(t, expectedLabelFreeShipping, result.Labels[0])
+	assert.Equal(t, expectedLabelFragile, result.Labels[1])
 }

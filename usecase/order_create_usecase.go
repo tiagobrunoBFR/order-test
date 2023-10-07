@@ -23,6 +23,7 @@ func OrderCreate(orderDto CreateOrderDto) entity.Order {
 	}
 
 	rules.ValueToFreeShipping(orderDto.Product.Value, &order)
+	rules.FragileByCategory(orderDto.Product.Category, &order)
 
 	return order
 }

@@ -1,6 +1,7 @@
 package entity
 
 const FreeShippingLabel = "frete-gratis"
+const FragileLabel = "frágil"
 
 type Product struct {
 	Category string
