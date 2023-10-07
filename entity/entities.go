@@ -1,7 +1,15 @@
 package entity
 
-const FreeShippingLabel = "frete-gratis"
-const FragileLabel = "frágil"
+const LabelFreeShipping = "frete-gratis"
+const LabelFragile = "frágil"
+const LabelGift = "presente"
+
+const PaymentMethodPix = "Pix"
+const PaymentMethodBankSlip = "Boleto"
+
+const CategoryElectronic = "eletrônico"
+const CategoryHomeAppliance = "eletrodoméstico"
+const CategoryChildren = "infantil"
 
 type Product struct {
 	Category string

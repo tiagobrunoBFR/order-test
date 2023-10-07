@@ -7,22 +7,37 @@ import (
 )
 
 func TestOrderCreate(t *testing.T) {
-	product := entity.Product{
-		Category: "eletrodoméstico",
-		Value:    1200,
+	casesTest := []struct {
+		productCategory      string
+		productValue         int
+		paymentMethod        string
+		expectedLabel        string
+		expectedPaymentValue int
+	}{
+		{entity.CategoryElectronic, 1200, entity.PaymentMethodPix, entity.LabelFreeShipping, 1200},
+		{entity.CategoryHomeAppliance, 900, entity.PaymentMethodPix, entity.LabelFragile, 900},
+		{entity.CategoryChildren, 900, entity.PaymentMethodPix, entity.LabelGift, 900},
+		{entity.CategoryElectronic, 900, entity.PaymentMethodBankSlip, "", 900},
 	}
 
-	method := "pix"
+	for _, caseTest := range casesTest {
+		product := entity.Product{
+			Category: caseTest.productCategory,
+			Value:    caseTest.productValue,
+		}
 
-	expectedLabelFreeShipping := entity.FreeShippingLabel
-	expectedLabelFragile := entity.FragileLabel
+		orderInput := CreateOrderDto{
+			Product: product,
+			Method:  caseTest.paymentMethod,
+		}
 
-	orderInput := CreateOrderDto{
-		Product: product,
-		Method:  method,
+		result := OrderCreate(orderInput)
+		var resultLabel string
+		if len(result.Labels) > 0 {
+			resultLabel = result.Labels[0]
+		}
+
+		assert.Equal(t, caseTest.expectedLabel, resultLabel)
+		assert.Equal(t, caseTest.expectedPaymentValue, result.Payment.Value)
 	}
-
-	result := OrderCreate(orderInput)
-	assert.Equal(t, expectedLabelFreeShipping, result.Labels[0])
-	assert.Equal(t, expectedLabelFragile, result.Labels[1])
 }
