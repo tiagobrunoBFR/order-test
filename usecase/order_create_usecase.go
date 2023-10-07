@@ -24,10 +24,15 @@ func OrderCreate(orderDto CreateOrderDto) entity.Order {
 		Payment: payment,
 	}
 
-	rules.LabelByValue(freeShippingValue, entity.LabelFreeShipping, &order)
-	rules.LabelByCategory(entity.CategoryHomeAppliance, entity.LabelFragile, &order)
-	rules.LabelByCategory(entity.CategoryChildren, entity.LabelGift, &order)
-	rules.DiscountByPaymentMethod(entity.PaymentMethodBankSlip, 0.10, &order)
+	labelFreeShipping := rules.LabelByValue{MaxValue: freeShippingValue, Label: entity.LabelFreeShipping}
+	labelFragile := rules.LabelByCategory{CategoryExpected: entity.CategoryHomeAppliance, Label: entity.LabelFragile}
+	labelGift := rules.LabelByCategory{CategoryExpected: entity.CategoryChildren, Label: entity.LabelGift}
+	discountByPayment := rules.DiscountByPaymentMethod{MethodExpected: entity.PaymentMethodBankSlip, DiscountPercentage: 0.10}
+
+	labelFreeShipping.Apply(&order)
+	labelFragile.Apply(&order)
+	labelGift.Apply(&order)
+	discountByPayment.Apply(&order)
 
 	return order
 }
