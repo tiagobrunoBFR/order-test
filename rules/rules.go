@@ -2,42 +2,27 @@ package rules
 
 import "order-test/entity"
 
-type Rule interface {
-	Apply(order *entity.Order)
+type Rule struct {
+	Order *entity.Order
 }
 
-type DiscountByPaymentMethod struct {
-	MethodExpected     string
-	DiscountPercentage float64
-}
-
-func (d *DiscountByPaymentMethod) Apply(o *entity.Order) {
-	if d.MethodExpected == o.Payment.Method {
+func (r *Rule) DiscountByPaymentMethod(methodExpected string, discountPercentage float64) {
+	if methodExpected == r.Order.Payment.Method {
 		var value float64
-		value = float64(o.Payment.Value / 100)
-		value = value * d.DiscountPercentage
-		o.Payment.Value = o.Payment.Value - int(value*100)
+		value = float64(r.Order.Payment.Value / 100)
+		value = value * discountPercentage
+		r.Order.Payment.Value = r.Order.Payment.Value - int(value*100)
 	}
 }
 
-type LabelByCategory struct {
-	CategoryExpected string
-	Label            string
-}
-
-func (lc *LabelByCategory) Apply(o *entity.Order) {
-	if o.Product.Category == lc.CategoryExpected {
-		o.AddLabel(lc.Label)
+func (r *Rule) LabelByCategory(categoryExpected string, label string) {
+	if r.Order.Product.Category == categoryExpected {
+		r.Order.AddLabel(label)
 	}
 }
 
-type LabelByValue struct {
-	MaxValue int
-	Label    string
-}
-
-func (lb *LabelByValue) Apply(o *entity.Order) {
-	if o.Payment.Value > lb.MaxValue {
-		o.AddLabel(lb.Label)
+func (r *Rule) LabelByValue(maxValue int, label string) {
+	if r.Order.Payment.Value > maxValue {
+		r.Order.AddLabel(label)
 	}
 }

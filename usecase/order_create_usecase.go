@@ -6,6 +6,7 @@ import (
 )
 
 const freeShippingValue = 1000
+const discountPercentage = 0.10
 
 type CreateOrderDto struct {
 	Product entity.Product
@@ -24,15 +25,14 @@ func OrderCreate(orderDto CreateOrderDto) entity.Order {
 		Payment: payment,
 	}
 
-	labelFreeShipping := rules.LabelByValue{MaxValue: freeShippingValue, Label: entity.LabelFreeShipping}
-	labelFragile := rules.LabelByCategory{CategoryExpected: entity.CategoryHomeAppliance, Label: entity.LabelFragile}
-	labelGift := rules.LabelByCategory{CategoryExpected: entity.CategoryChildren, Label: entity.LabelGift}
-	discountByPayment := rules.DiscountByPaymentMethod{MethodExpected: entity.PaymentMethodBankSlip, DiscountPercentage: 0.10}
+	rulesOrder := rules.Rule{
+		Order: &order,
+	}
 
-	labelFreeShipping.Apply(&order)
-	labelFragile.Apply(&order)
-	labelGift.Apply(&order)
-	discountByPayment.Apply(&order)
+	rulesOrder.LabelByValue(freeShippingValue, entity.LabelFreeShipping)
+	rulesOrder.LabelByCategory(entity.CategoryHomeAppliance, entity.LabelFragile)
+	rulesOrder.LabelByCategory(entity.CategoryChildren, entity.LabelGift)
+	rulesOrder.DiscountByPaymentMethod(entity.PaymentMethodBankSlip, discountPercentage)
 
 	return order
 }
